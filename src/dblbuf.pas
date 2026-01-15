@@ -3,7 +3,7 @@ program DblBuf;
 
 {$G+}
 
-uses crt, gfx, font, fps;
+uses crt, gfx, gfxdbl, font, fps;
 
 const 
   NUM_BOXES = 5;
@@ -20,42 +20,12 @@ type
     procedure Erase;
   end;
 
-  TBuffer = array[0..(SCREEN_WIDTH * SCREEN_HEIGHT)-1] of byte;
 
 var 
   i: integer;
   boxes: array [0..NUM_BOXES-1] of TBox;
   fpsCounter: TFpsCounter;
   s: string[10];
-  Buffer: ^TBuffer;
-
-procedure ClearBuffer(color: byte); assembler;
-asm
-  push ds
-  push es
-  cld
-  les di, Buffer
-  mov al, color
-  mov ah, al
-  mov cx, (SCREEN_WIDTH * SCREEN_HEIGHT) / 2
-  rep stosw
-  pop es
-  pop ds
-end;
-
-procedure FlipBuffer; assembler;
-asm
-  push ds
-  push es
-  mov ax, $A000
-  mov es, ax
-  xor di, di
-  lds si, Buffer
-  mov cx, (SCREEN_WIDTH * SCREEN_HEIGHT) / 2
-  rep movsw
-  pop es
-  pop ds
-end;
 
 procedure TBox.Init;
 begin
@@ -139,15 +109,12 @@ end;
 
 begin
   randomize;
-
-  GetMem(Buffer, sizeof(TBuffer));
-  ClearBuffer(0);
+  InitBuffer;
   
   for i := 0 to NUM_BOXES-1 do
     boxes[i].Init;
   
   fpsCounter.Init;
-  
   SetVideoMode($13);
   
   repeat
@@ -172,7 +139,6 @@ begin
   until KeyPressed;
   
   SetVideoMode($03);
-  
-  FreeMem(Buffer, sizeof(TBuffer));
-  
+  DoneBuffer;
+
 end.

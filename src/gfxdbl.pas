@@ -1,0 +1,61 @@
+unit GfxDbl;
+
+{$G+}
+
+interface
+
+uses crt, gfx;
+
+type 
+  TBuffer = array[0..(SCREEN_WIDTH * SCREEN_HEIGHT)-1] of byte;
+
+var 
+  Buffer: ^TBuffer;
+
+procedure InitBuffer;
+procedure DoneBuffer;
+procedure ClearBuffer(color: byte); 
+procedure FlipBuffer; 
+
+implementation
+
+procedure InitBuffer;
+begin
+  GetMem(Buffer, sizeof(TBuffer));
+  ClearBuffer(0);
+end;
+
+procedure DoneBuffer;
+begin
+    FreeMem(Buffer, sizeof(TBuffer));
+end;
+
+procedure ClearBuffer(color: byte); assembler;
+asm
+  push ds
+  push es
+  cld
+  les di, Buffer
+  mov al, color
+  mov ah, al
+  mov cx, (SCREEN_WIDTH * SCREEN_HEIGHT) / 2
+  rep stosw
+  pop es
+  pop ds
+end;
+
+procedure FlipBuffer; assembler;
+asm
+  push ds
+  push es
+  mov ax, $A000
+  mov es, ax
+  xor di, di
+  lds si, Buffer
+  mov cx, (SCREEN_WIDTH * SCREEN_HEIGHT) / 2
+  rep movsw
+  pop es
+  pop ds
+end;
+
+end.
