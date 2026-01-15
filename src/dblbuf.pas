@@ -92,6 +92,7 @@ asm
     mov bx, [si]            { x }
     mov dx, [si+2]          { y }
     mov al, [si+12]         { color }
+    mov ah, al
 
     les di, Buffer
     
@@ -106,8 +107,8 @@ asm
     mov cx, 16
 @row:
     push cx
-    mov cx, 16
-    rep stosb
+    mov cx, 8
+    rep stosw
     add di, 320 - 16
     pop cx
     loop @row
@@ -125,6 +126,7 @@ asm
     mov bx, [si+4]         { oldx }
     mov dx, [si+6]         { oldy }
     xor ax, ax             { color = 0 }
+    
 
     mov di, dx
     shl di, 6
@@ -136,8 +138,8 @@ asm
     mov cx, 16
 @row:
     push cx
-    mov cx, 16
-    rep stosb
+    mov cx, 8
+    rep stosw
     add di, 320 - 16
     pop cx
     loop @row
