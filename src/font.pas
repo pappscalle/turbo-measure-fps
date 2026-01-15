@@ -54,7 +54,7 @@ var
   i: integer;
 begin
   for i := 1 to length(s) do
-    DrawChar(x + (i-1)*FONT_WIDTH, y, s[i], random(16));
+    DrawChar(x + (i-1)*FONT_WIDTH, y, s[i], color);
 end;
 
 end.

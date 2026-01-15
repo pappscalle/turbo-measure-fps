@@ -1,14 +1,16 @@
+
 unit Fps;
 
 interface
 
 uses crt;
 
-type
+type 
     TFpsCounter = object
         frames: longint;
         lastTick: word;
-        fps: byte;
+        tickAcc: word;
+        fps: word;
         procedure Init;
         procedure Frame;
         procedure Update;
@@ -20,8 +22,9 @@ procedure TFpsCounter.Init;
 begin
     frames := 0;
     lastTick := MemW[$40:$6C];
+    tickAcc := 0;
     fps := 0;
-end;    
+end;
 
 procedure TFpsCounter.Frame;
 begin
@@ -29,15 +32,22 @@ begin
 end;
 
 procedure TFpsCounter.Update;
-var
-    tick: word;
+var 
+    tick:   word;
 begin
     tick := MemW[$40:$6C];
-    if tick <> lastTick then begin
-        fps := frames;
-        frames := 0;
-        lastTick := tick;
-    end;
-end;    
+    if tick <> lastTick then
+        begin
+            inc(tickAcc);
+            lastTick := tick;
+
+            if tickAcc >= 18 then
+                begin
+                    fps := frames;
+                    frames := 0;
+                    tickAcc := 0;
+                end;
+        end;
+end;
 
 end.
