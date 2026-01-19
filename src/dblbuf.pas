@@ -3,7 +3,7 @@ program DblBuf;
 
 {$G+}
 
-uses crt, gfx, gfxdbl, font, fps;
+uses crt, gfx, gfxbuf, font, fps;
 
 const 
   NUM_BOXES = 5;

@@ -1,4 +1,4 @@
-unit GfxDbl;
+unit GfxBuf;
 
 {$G+}
 
@@ -27,6 +27,7 @@ end;
 
 procedure DoneBuffer;
 begin
+  if Buffer <> nil then
     FreeMem(Buffer, sizeof(TBuffer));
 end;
 
